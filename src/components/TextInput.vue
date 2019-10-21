@@ -1,7 +1,7 @@
 <template>
   <div
     class="text-input"
-    v-bind:class="{ 'text-input__hasFocus': hasFocus || isNotEmpty }"
+    v-bind:class="{ 'text-input__hasFocus': hasFocus || isNotEmpty, 'text-input__hasError': errorMsg !== null }"
   >
     <label class="text-input__label" v-if="hasFocus || isNotEmpty">{{label}}</label>
     <input
@@ -12,7 +12,9 @@
       @focus="toggleFocus"
       @blur="toggleBlur"
     />
-    <div class="text-input__error" v-if="error !== null"></div>
+    <div class="text-input__error" v-if="errorMsg !== null">
+      <Icon class="text-input__error-icon" name="danger" color="#C6007E" /><span>{{errorMsg}}</span>
+    </div>
     <div
       class="text-input__suggestions"
       v-if="error === null && suggestions !== null && isNotEmpty && filteredSuggestions.length > 1"
@@ -27,8 +29,12 @@
 </template>
 
 <script>
+import Icon from './Icon'
 export default {
   name: 'textinput',
+  components: {
+    Icon,
+  },
   data() {
     return {
       hasFocus: false,
@@ -99,6 +105,16 @@ export default {
     &.text-input__hasFocus {
       padding-top: 0.3rem;
     }
+    &.text-input__hasError {
+      background: #FFF2FA;
+      border: 2px solid #C6007E;
+      box-shadow: 0px 0px 10px rgba(198, 0, 126, 0.35);
+      border-radius: 3px;
+      input {
+        color: #C6007E;
+        background: #FFF2FA;
+      }
+    }
     .text-input__label {
       font-family: Roboto;
       font-style: normal;
@@ -117,6 +133,21 @@ export default {
       font-size: 1rem;
       line-height: 1.2rem;
       color: #919191;
+    }
+    .text-input__error {
+      color: #C6007E;
+      margin-top: 1.4rem;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      line-height: 0.9rem;
+      .text-input__error-icon {
+        width: 17px;
+        height: 17px;
+        margin-right: 0.6rem;
+      }
     }
     .text-input__suggestions {
       background-color: #FFF;

@@ -20,6 +20,7 @@
           <Datepicker
             label="Departure"
             @selected="departureSelected"
+            errorMsg="you've messed it up!"
           />
           <Datepicker
             label="Return"
