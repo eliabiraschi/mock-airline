@@ -9,26 +9,32 @@
         <div class="modal__body_inputfields">
           <TextInput
             label="Origin"
-            :suggestions="suggestions"
+            :suggestions="originSuggetions"
+            :errorMsg="originErrorMsg"
             @selected="originSelected"
           />
           <TextInput
             label="Destination"
-            :suggestions="suggestions"
+            :suggestions="destinationSuggestions"
+            :errorMsg="destinationErrorMsg"
             @selected="destinationSelected"
           />
           <Datepicker
             label="Departure"
             @selected="departureSelected"
-            errorMsg="you've messed it up!"
+            :errorMsg="departureErrorMsg"
+            :from="new Date()"
+            style="margin-bottom: 3.2rem;"
           />
           <Datepicker
             label="Return"
             @selected="returnSelected"
+            :from="new Date(departure)"
+            style="margin-bottom: 3.2rem;"
           />
         </div>
         <div>
-          <button class="modal__submit">search</button>
+          <button class="modal__submit" @click="handleSearchClick">search</button>
         </div>
       </div>
     </div>
@@ -48,25 +54,56 @@ export default {
   },
   data() {
     return {
-      suggestions: ['Rome','Berlin','London','Budapest'],
       origin: null,
       destination: null,
       departure: null,
       return: null,
+      destinationSuggestions: [],
+      originErrorMsg: null,
+      destinationErrorMsg: null,
+      departureErrorMsg: null,
     }
+  },
+  computed: {
+    originSuggetions() {
+      return this.$store.getters.getOriginSuggestions
+    },
+  },
+  mounted() {
+    this.$store.dispatch('fetchAirports')
   },
   methods: {
     originSelected(value) {
       this.origin = value;
+      const originIata = value.match(/\((.*?)\)/)[1]
+      this.$store.dispatch({type: 'setOrigin', value: originIata })
+      this.destinationSuggestions = this.$store.getters.getDestinationSuggestions(originIata)
+      this.originErrorMsg = null
     },
     destinationSelected(value) {
-      this.departure = value;
+      this.destination = value;
+      this.$store.dispatch({type: 'setDestination', value: value.match(/\((.*?)\)/)[1] })
+      this.destinationErrorMsg = null
     },
     departureSelected(value){
       this.departure = value;
+      this.$store.dispatch({type: 'setDeparture', value: `${value.getFullYear()}-${value.getMonth() + 1}-${value.getDate()}` })
+      this.departureErrorMsg = null
     },
     returnSelected(value){
       this.return = value;
+      this.$store.dispatch({type: 'setReturn', value: `${value.getFullYear()}-${value.getMonth() + 1}-${value.getDate()}` })
+    },
+    handleSearchClick(){
+      if (this.origin === null || this.origin.length === 0) {
+        this.originErrorMsg = "Please select a valid origin"
+      } else if (this.destination === null || this.destination.length === 0) {
+        this.destinationErrorMsg = "Please select a valid destination"
+      } else if (this.departure === null) {
+        this.departureErrorMsg = "Please select a departure"
+      } else {
+        this.$router.push('search')
+      }
     }
   },
 }
@@ -131,7 +168,7 @@ export default {
       flex-wrap: wrap;
     }
     .modal__submit {
-      background: #3434E0;
+      background: $PRIMARY_ALT;
       border-radius: 3px;
       font-family: Roboto;
       font-style: normal;
@@ -139,7 +176,7 @@ export default {
       font-size: 1.2rem;
       line-height: 1.7rem;
       text-transform: uppercase;
-      color: #FFFFFF;
+      color: $WHITE;
       border: none;
       outline: none;
       width: 15rem;

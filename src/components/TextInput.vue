@@ -90,29 +90,32 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "../styles/vars";
   .text-input {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
-    background: #FFFFFF;
-    border: 1px solid #919191;
+    background: $WHITE;
+    border: 1px solid $GREY_ALT;
     border-radius: 2px;
     padding: 0.9rem;
     min-height: 3.2rem;
     max-height: 3.2rem;
     margin-bottom: 3.2rem;
+    width: 15rem;
+    max-width: 15rem;
     &.text-input__hasFocus {
       padding-top: 0.3rem;
     }
     &.text-input__hasError {
-      background: #FFF2FA;
-      border: 2px solid #C6007E;
+      background: $WHITE_ALT;
+      border: 2px solid $ACCENT;
       box-shadow: 0px 0px 10px rgba(198, 0, 126, 0.35);
       border-radius: 3px;
       input {
-        color: #C6007E;
-        background: #FFF2FA;
+        color: $ACCENT;
+        background: $WHITE_ALT;
       }
     }
     .text-input__label {
@@ -122,7 +125,7 @@ export default {
       font-size: 0.8rem;
       line-height: 0.9rem;
       text-transform: uppercase;
-      color: #919191;
+      color: $GREY_ALT;
     }
     .text-input__field {
       border: none;
@@ -132,10 +135,10 @@ export default {
       font-weight: normal;
       font-size: 1rem;
       line-height: 1.2rem;
-      color: #919191;
+      color: $GREY_ALT;
     }
     .text-input__error {
-      color: #C6007E;
+      color: $ACCENT;
       margin-top: 1.4rem;
       display: flex;
       flex-direction: row;
@@ -150,18 +153,20 @@ export default {
       }
     }
     .text-input__suggestions {
-      background-color: #FFF;
+      background-color: $WHITE;
       width: 100%;
       margin-top: 0.6rem;
       box-shadow: 6px 6px 15px rgba(0, 0, 0, 0.1);
-      color: #919191;
+      color: $GREY_ALT;
       z-index: 2;
       ul {
         list-style-type: none;
+        max-height: 15rem;
+        overflow-x: auto;
         li {
           margin-bottom: 0.5rem;
           a {
-            color: #919191;
+            color: $GREY_ALT;
             text-decoration: none;
           }
         }
